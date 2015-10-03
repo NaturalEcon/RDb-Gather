@@ -98,7 +98,8 @@
         service.upc = function(newUpc) {
             var deferred = $q.defer();
             var resolveResults = function (tx, results) {
-                deferred.resolve(results.rows);
+                var data = JSON.parse(JSON.stringify(results.rows));
+                deferred.resolve(data);
             }
             var rejectWithError = function (err) {
                 deferred.reject(err);
