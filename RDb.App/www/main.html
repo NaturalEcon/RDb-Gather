@@ -13,7 +13,7 @@
     <script type="text/javascript" src="scripts/lib/angular-ui-router.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/debugger.css"/>
-    <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />-->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 
     <script>
         angular.module("RDb", ["ui.router"]);
@@ -24,6 +24,7 @@
     <script type="text/javascript" src="app/shared/rdbSvc.js"></script>
     <script type="text/javascript" src="app/data/apiSvc.js"></script>
     <script type="text/javascript" src="app/data/sqlSvc.js"></script>
+    <script type="text/javascript" src="app/data/queryableFactory.js"></script>
     <script type="text/javascript" src="app/home/homeCtrl.js"></script>
     <script type="text/javascript" src="app/appStart.js"></script>
     <script type="text/javascript" src="app/scan/scanSvc.js"></script>
@@ -32,15 +33,13 @@
 <body>
     <div ng-controller="homeCtrl">
         <nav class="navbar navbar-inverse" role="navigation">
-            <div class="navbar-header">
-                <a class="navbar-brand" ui-sref="home">RDb home</a>
+            <div class="nav navbar-nav navbar-collapse">
+                <span><a class="navbar-brand" ui-sref="home">RDb home</a></span>
+                <span><a class="btn navbar-btn" ui-sref="home"><span class="glyphicon glyphicon-home"></span></a></span>
+                <span><a class="btn navbar-btn" ui-sref="scan"><span class="glyphicon glyphicon-barcode"></span></a></span>
+                <span><a class="btn navbar-btn"  ui-sref="list"><span class="glyphicon glyphicon-list"></span></a></span>
+                <span><a class="btn navbar-btn" ui-sref="about"><span class="glyphicon glyphicon-info-sign"></span></a></span>
             </div>
-            <ul class="nav navbar-nav">
-                <li><a ui-sref="home">Home</a></li>
-                <li><a ui-sref="about">About</a></li>
-                <li><a ui-sref="scan">Scan</a></li>
-                <li><a ui-sref="list">List</a></li>
-            </ul>
         </nav>
         <!-- Scope inspector -->
         <!--<ng-inspector></ng-inspector>-->

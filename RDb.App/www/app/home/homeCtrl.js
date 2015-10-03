@@ -2,7 +2,7 @@
     'use strict';
 
     var homeCtrl = function ($scope, $window, $rootScope, sqlSvc) {
-        
+        $scope.Title = "RDb home";
     }
     try {
         angular.module("RDb")

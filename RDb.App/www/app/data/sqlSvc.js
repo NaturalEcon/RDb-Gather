@@ -1,6 +1,7 @@
 ﻿(function () {
-    var sqlSvc = function ($q, rdbSvc) {
+    var sqlSvc = function ($q, rdbSvc, queryableFact) {
         var service = this;
+        var q = queryableFact.Queryable;
         var createDb = function (tx) {
             tx.executeSql("CREATE TABLE IF NOT EXISTS UPC (id integer primary key, upc text, datetime text)");
             tx.executeSql("CREATE TABLE IF NOT EXISTS SCAN (id integer primary key, data text, barcodetype text)");
@@ -24,28 +25,24 @@
                 finishCallsAfterInit();
             }
         }
-        
+        var sqlValues = function () {
+            var args = [];
+            for (var i in arguments) {
+                if (typeof (arguments[i]) == "string") {
+                    args.push("'" + arguments[i] + "'");
+                }
+                else {
+                    args.push("" + arguments[i]);
+                }
+            }
+            return "VALUES (" + args.join(",") + ")";
+        }
         service.callbacksBeforeInit = [];
         service.preInit = true;
-        service.upcList = function() {
-            var deferred = $q.defer();
-            var resolveResults = function (tx, results) {
-                deferred.resolve(results);
-            }
-            var rejectWithError = function (err) {
-                deferred.reject(err);
-            }
-            deferUntilInit(function() {
-                service.db.transaction(function(tx) {
-                    tx.executeSql("SELECT * FROM UPC", [], resolveResults, rejectWithError);
-                });
-            });
-            return deferred.promise;
-        }
         service.upcListWithProductInfo = function() {
             var deferred = $q.defer();
             var resolveResults = function (tx, results) {
-                deferred.resolve(results);
+                deferred.resolve(q(results));
             }
             var rejectWithError = function (err) {
                 deferred.reject(err);
@@ -57,19 +54,6 @@
                 });
             });
             return deferred.promise;
-        }
-
-        var sqlValues = function () {
-            var args = [];
-            for (var i in arguments) {
-                if (typeof(arguments[i]) == "string") {
-                    args.push("'" + arguments[i] + "'");
-                }
-                else {
-                    args.push("" + arguments[i]);
-                }
-            }
-            return "VALUES (" + args.join(",") + ")";
         }
         service.addUpcAndProductInfo = function (upc, productInfo, datetime) {
             var deferred = $q.defer();
@@ -95,11 +79,18 @@
 
             });
         }
-        service.upc = function(newUpc) {
+        service.upcList = function(newUpcs) {
             var deferred = $q.defer();
             var resolveResults = function (tx, results) {
-                var data = JSON.parse(JSON.stringify(results.rows));
-                deferred.resolve(data);
+                var data = q(results.rows);
+                var copyValues = function(item) {
+                    return {
+                        Upc: item.upc,
+                        DateTime: item.datetime
+                    }
+                }
+                var result = data.select(copyValues);
+                deferred.resolve(result);
             }
             var rejectWithError = function (err) {
                 deferred.reject(err);
@@ -110,17 +101,22 @@
                     tx.executeSql(queryString, [], resolveResults, rejectWithError);
                 });
             }
-            var insertOrReplaceAndSelect = function(newUpc) {
+            var insertOrReplaceAndSelect = function () {
+                if (newUpcs.isQueryable) {
+                    newUpcs = newUpcs.toList();
+                }
                 service.db.transaction(function (tx) {
-                    var queryString = "INSERT OR REPLACE UPC (upc, datetime) VALUES ('" + upc + "',"
-                        + "'" + datetime + "')";
-                    tx.executeSql(queryString, [], selectUpcs, rejectWithError);
+                    var queryString = "INSERT OR REPLACE INTO UPC (upc, datetime) VALUES (?,?)";
+                    angular.forEach(newUpcs, function(upc) {
+                        tx.executeSql(queryString, [upc.Upc, upc.DateTime], selectUpcs, rejectWithError);
+                    });
+                    return selectUpcs;
                 });
             }
 
             deferUntilInit(function () {
-                if (newUpc) {
-                    insertOrReplaceAndSelect(newUpc);
+                if (newUpcs) {
+                    insertOrReplaceAndSelect();
                 } else {
                     selectUpcs();
                 }
@@ -150,5 +146,5 @@
         return service;
     }
 
-    angular.module("RDb").service("sqlSvc", ["$q", "rdbSvc", sqlSvc]);
+    angular.module("RDb").service("sqlSvc", ["$q", "rdbSvc", "queryableFact", sqlSvc]);
 })();

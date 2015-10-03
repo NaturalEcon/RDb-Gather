@@ -1,6 +1,5 @@
 ﻿(function () {
     var scanCtrl = function ($scope, commonSvc, scanSvc, apiSvc, upcDtoFact, sqlSvc) {
-        console.log("Scan ctrl");
         var initialized = false;
         var updateProductInfo = function(upc) {
             apiSvc.upcInfo(upc).then(function(response) {
@@ -36,10 +35,24 @@
 })();
 
 (function() {
-    var listCtrl = function($scope, sqlSvc) {
-        sqlSvc.upc().then(function(result) {
-            $scope.list = result;
-        });
+    var listCtrl = function($scope, sqlSvc, apiSvc) {
+        $scope.Title = "Scans";
+        var updateScope = function (upcList) {
+            $scope.upcList = upcList;
+            $scope.scans = upcList.toList(); 
+        }
+        sqlSvc.upcList().then(updateScope);
+        $scope.batch = apiSvc.batchDb;
+        $scope.remove = function(scan) {
+            var isNotInput = function (item) {
+                var fixUndef = function(prop) {
+                    return prop === "undefined" ? undefined : prop;
+                }
+                return fixUndef(item.Upc) !== fixUndef(scan.Upc)
+                    && fixUndef(item.DateTime) !== fixUndef(scan.DateTime);
+            }
+            sqlSvc.upcList($scope.upcList.where(isNotInput)).then(updateScope);
+        }
     }
-    angular.module("RDb").controller("listCtrl", ["$scope", "sqlSvc", listCtrl]);
+    angular.module("RDb").controller("listCtrl", ["$scope", "sqlSvc", "apiSvc", listCtrl]);
 })();
