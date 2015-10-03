@@ -1,0 +1,65 @@
+﻿.debugger.closed {
+    display: none;
+}
+
+.debugger {
+    position: absolute;
+    z-index: 99999999999999;
+    top: -20px;
+    left: -10px;
+    height: 1280px;
+    width: 75%;
+    background-color: #cccccc;
+    padding-left: 15px;
+    padding-top: 15px;
+    border: 2px #666666 solid;
+    overflow: scroll;
+}
+
+.debugger-button {
+    background: #cccccc;
+    position: absolute;
+    top: 0;
+    left: 76%;
+    z-index: 99999999;
+    height: 50px;
+    width: 30px;
+    border: 2px #666666 solid;
+    border-radius: 5px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.debugger-button > img {
+    margin-top: 10px;
+}
+
+.debugger-button.closed {
+    left: -12px;
+}
+
+.inspector-panel > ul {
+    padding-left: 5px;
+}
+
+.inspector-value-display {
+    max-height: 75px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #000;
+    font-family: Consolas,monaco,monospace;
+}
+
+.inspector-button {
+    display: block;
+    min-width: 25px;
+    max-width: 20em;
+    min-height: 20px;
+    background: #aaaaaa;
+}
+
+.inspector-button > h4 {
+    color: #000000;
+    margin-bottom: 2px;
+    font-size: 10pt;
+}

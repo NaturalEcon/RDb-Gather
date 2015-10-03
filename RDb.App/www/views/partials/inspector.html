@@ -1,0 +1,21 @@
+﻿<span id="debugContainer" ng-show="debugger.show">
+    <div class="debugger" ng-class="debugger.closed()">
+        <h3>Scope Inspector</h3>
+        <a class="inspector-button" ng-click="debugger.inspectorBack()"><h4>{{debugger.lastInspectedObject()}}:</h4></a>
+        <div class="inspector-panel">
+            <ul>
+                <li ng-repeat="(name, value) in debugger.inspectedObject()">
+                    <a ng-click="debugger.inspectedObject(name)" class="inspector-button">
+                        <h4 class="property-name">{{name}}</h4>
+                        <div class="inspector-value-display">
+                            <span ng-show="typeof(value) !== 'function'">{{value}}</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <span class="debugger-button" ng-click="debugger.close()" ng-class="debugger.closed()">
+        <img src="img/icons/debugger.png" width="30">
+    </span>
+</span>

@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html id="appElement">
+<head>
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <title>RDb scanner</title>
+    <!-- Lib -->
+    <script src="cordova.js"></script>
+    <script type="text/javascript" src="scripts/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/lib/angular.js"></script>
+    <script type="text/javascript" src="scripts/lib/angular-ui-router.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/debugger.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />-->
+
+    <script>
+        angular.module("RDb", ["ui.router"]);
+    </script>
+
+    <script type="text/javascript" src="app/shared/inspector.js"></script>
+    <script type="text/javascript" src="app/shared/commonSvc.js"></script>
+    <script type="text/javascript" src="app/shared/rdbSvc.js"></script>
+    <script type="text/javascript" src="app/data/apiSvc.js"></script>
+    <script type="text/javascript" src="app/data/sqlSvc.js"></script>
+    <script type="text/javascript" src="app/home/homeCtrl.js"></script>
+    <script type="text/javascript" src="app/appStart.js"></script>
+    <script type="text/javascript" src="app/scan/scanSvc.js"></script>
+    <script type="text/javascript" src="app/scan/scanCtrl.js"></script>
+</head>
+<body>
+    <div ng-controller="homeCtrl">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="navbar-header">
+                <a class="navbar-brand" ui-sref="home">RDb home</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a ui-sref="home">Home</a></li>
+                <li><a ui-sref="about">About</a></li>
+                <li><a ui-sref="scan">Scan</a></li>
+                <li><a ui-sref="list">List</a></li>
+            </ul>
+        </nav>
+        <!-- Scope inspector -->
+        <!--<ng-inspector></ng-inspector>-->
+        <div ui-view></div>
+    </div>
+</body>
+</html>

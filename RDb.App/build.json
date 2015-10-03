@@ -1,0 +1,10 @@
+{
+  "android": {
+    "release": {
+      "keystore": "platforms/android/Ryan S.p12",
+      "storePassword": "@T3rpsys*",
+      "alias": "Ryan S",
+      "password": "@T3rpsys*"
+    }
+  }
+ }

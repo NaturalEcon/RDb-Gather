@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="RDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="RDbUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="60" />
+          <Property Name="Collections" Type="int" />
+        </EntityType>
+        <EntityType Name="Upc">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Upc" Type="varchar" MaxLength="13" />
+          <Property Name="Name" Type="varchar" MaxLength="4000" />
+        </EntityType>
+        <EntityType Name="UpcLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Upc" Type="varchar" MaxLength="13" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="DateTime" Type="datetime" />
+        </EntityType>
+        <EntityContainer Name="RDbModelStoreContainer">
+          <EntitySet Name="RDbUser" EntityType="Self.RDbUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Upc" EntityType="Self.Upc" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UpcLog" EntityType="Self.UpcLog" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="RDbUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="Collections" Type="Int32" />
+          <NavigationProperty Name="UpcLogs" Relationship="Self.FK_UpcLog_RDbUser" FromRole="RDbUser" ToRole="UpcLog" />
+        </EntityType>
+        <EntityType Name="Upc">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpcData" Type="String" MaxLength="13" Unicode="false" FixedLength="false" />
+          <Property Name="Name" Type="String" MaxLength="4000" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="UpcLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Upc" Type="String" MaxLength="13" Unicode="false" FixedLength="false" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="DateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="RDbUser" Relationship="Self.FK_UpcLog_RDbUser" FromRole="UpcLog" ToRole="RDbUser" />
+        </EntityType>
+        <Association Name="FK_UpcLog_RDbUser">
+          <End Role="RDbUser" Type="Self.RDbUser" Multiplicity="0..1" />
+          <End Role="UpcLog" Type="Self.UpcLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RDbUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UpcLog">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="RDbUsers" EntityType="Self.RDbUser" />
+          <EntitySet Name="Upcs" EntityType="Self.Upc" />
+          <EntitySet Name="UpcLogs" EntityType="Self.UpcLog" />
+          <AssociationSet Name="FK_UpcLog_RDbUser" Association="Self.FK_UpcLog_RDbUser">
+            <End Role="RDbUser" EntitySet="RDbUsers" />
+            <End Role="UpcLog" EntitySet="UpcLogs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RDbModelStoreContainer" CdmEntityContainer="RDbEntities">
+          <EntitySetMapping Name="RDbUsers">
+            <EntityTypeMapping TypeName="RDbModel.RDbUser">
+              <MappingFragment StoreEntitySet="RDbUser">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Collections" ColumnName="Collections" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Upcs">
+            <EntityTypeMapping TypeName="RDbModel.Upc">
+              <MappingFragment StoreEntitySet="Upc">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UpcData" ColumnName="Upc" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UpcLogs">
+            <EntityTypeMapping TypeName="RDbModel.UpcLog">
+              <MappingFragment StoreEntitySet="UpcLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Upc" ColumnName="Upc" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,49 @@
+﻿<html ng-app="RDb">
+<head>
+    <title>RDb</title>
+    @Scripts.Render("~/js/base")
+</head>
+<body>
+<h2>Welcome!</h2>
+<div ng-controller="HomeCtrl">
+    <ul>
+        <li ng-repeat="upc in UpcList">
+            UPC: {{upc.Upc}}<br/>
+            On: {{upc.DateTime}}
+        </li>
+    </ul>
+    <span class="success" ng-show="newUpcAdded">Your data has been entered.</span>
+    <span class="error" ng-show="upcAddError">There is an issue with your data.</span>
+    <form name="newUpcForm" ng-submit="addUpc()">
+        <ul style="list-style-type: none;">
+            <li>
+                <label for="upcField">UPC: </label>
+                <input id="upcField" name="upc" type="text" ng-model="newUpc.Upc" required="" ng-model-options="{ updateOn: 'blur' }" />
+
+                <div ng-show="form.$submitted || form.upc.$touched">
+                    <div class="has-error" ng-show="form.upc.$error.required">You must enter a valid UPC.</div>
+                </div>
+            </li>
+            <li>
+                <label for="dateField">Date: </label>
+                <input id="dateField" name="date" type="text" ng-model="newUpc.DateTime" required="" ng-model-options="{ updateOn: 'blur' }"/>
+
+                <div ng-show="form.$submitted || form.date.$touched">
+                    <div class="has-error" ng-show="form.date.$error.required">You must enter a valid datetime.</div>
+                </div>
+            </li>
+            <li>
+                <input id="userField" type="hidden" ng-model="newUpc.UserId"/>
+            </li>
+            <li>
+                <input type="submit" value="Submit" />
+            </li>
+        </ul>
+    </form>
+
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
+@Scripts.Render("~/js/app/upc")
+</body>
+</html>
