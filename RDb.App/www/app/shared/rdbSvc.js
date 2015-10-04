@@ -13,8 +13,14 @@
             }
             return pad(day) + "/" + pad(month) + "/" + year + " " + pad(hour) + ':' + pad(minute) + ':' + pad(second);
         }
+        var UI = {
+            Title: 'Gather',
+            ShowNav: true,
+            InspectorEnabled: false
+        }
         return {
-            getDate: getCsharpDate
+            getDate: getCsharpDate,
+            UI: UI
         }
     }
     angular.module("RDb").service("rdbSvc", rdbSvc);

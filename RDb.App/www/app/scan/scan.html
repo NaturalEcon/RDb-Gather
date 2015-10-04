@@ -1,40 +1,37 @@
-﻿<h2>Result</h2>
-<div>
-    <div class="controls">
-        <ul>
-            <li ng-click="startScan()">
-                (+)
-            </li>
-            <li ng-click="startBatch()">
-                (++)
-            </li>
-        </ul>
+﻿<div class="container" ng-controller="scanCtrl as scan">
+    <div class="well center-block controls btn-group-vertical">
+        <a class="btn btn-lg btn-primary btn-block" ng-click="scan.startScan()" role="button">
+            <span class="glyphicon glyphicon-plus"></span>  New Scan
+        </a>
+        <!--<span class="btn btn-lg btn-default" ng-click="startBatch()">
+            <span class="glyphicon glyphicon-plus"></span><span class="glyphicon glyphicon-repeat"></span>
+        </span>-->
     </div>
-    <div class="upc-info">
+    <p class="lead" ng-hide="scan.data.upc">
+        Nothing here yet.  Scan something to add it to your local database and see more information.
+    </p>
+    <div class="upc-info" ng-show="scan.data.upc">
         <h2>Most recent scan:</h2>
         <div id="upc">
-            <span>UPC: </span><span>{{upc.Upc}}</span>
+            <span>UPC: </span><span>{{scan.data.upc.Upc}}</span>
         </div>
         <div id="date">
-            <span>On: </span><span>{{upc.DateTime}}</span>
+            <span>On: </span><span>{{scan.data.upc.DateTime}}</span>
         </div>
     </div>
-    <div ng-show="requestSent">
-        Upc {{msg}}.
-    </div>
-    <div>
+    <div ng-show="scan.data.productInfo.itemname || scan.data.productInfo.alias || scan.data.productInfo.description">
         <h4>Product information:</h4>
         <div id="productName">
-            <span>Name: </span><span>{{productInfo.itemname}}</span>
+            <span>Name: </span><span>{{scan.data.productInfo.itemname}}</span>
         </div>
-        <div id="alias" ng-show="productInfo.alias !== productInfo.itemname && productInfo.alias !== ''">
-            <span>Alias: </span><span>{{productInfo.alias}}</span>
+        <div id="alias" ng-show="scan.data.productInfo.alias !== scan.data.productInfo.itemname && scan.data.productInfo.alias !== ''">
+            <span>Alias: </span><span>{{scan.data.productInfo.alias}}</span>
         </div>
-        <div id="productDesc" ng-show="productInfo.itemname !== productInfo.description">
-            <span>Description: </span><span>{{productInfo.description}}</span>
+        <div id="productDesc" ng-show="scan.data.productInfo.itemname !== scan.data.productInfo.description">
+            <span>Description: </span><span>{{scan.data.productInfo.description}}</span>
         </div>
-        <div id="price" ng-show="productInfo.avg_price !== ''">
-            <span>Average Price: </span><span>{{productInfo.avg_price}}</span>
+        <div id="price" ng-show="scan.data.productInfo.avg_price !== ''">
+            <span>Average Price: </span><span>{{scan.data.productInfo.avg_price}}</span>
         </div>
     </div>
 </div>

@@ -1,18 +1,20 @@
-﻿<div id="scanList" class="container">
+﻿<div id="scanList" class="container" ng-controller="listCtrl as list">
     <ul class="list-unstyled" class="list-group">
-        <li ng-repeat="scan in scans" class="list-group-item">
-            <div class="list-group-item-text">
-                <span>
-                    <span>{{scan.Upc}}</span>
-                    <span ng-show="scan.datetime">({{scan.DateTime}})</span><abbr title="No date" ng-hide="scan.datetime">(n.d.)</abbr>
-                </span>
-                <span class="controls right">
-                    <a class="btn action-link" ng-click="remove(scan)"><span class="glyphicon glyphicon-remove"></span></a>
-                </span>
+        <li ng-repeat="scan in list.scans" class="list-group-item">
+            <div class="list-group-item-text row">
+                <div class="row col-lg-11 col-md-11 col-sm-11 col-xs-11">
+                    <span class="col-lg-8 col-md-8 col-sm-8 col-xs-8">{{list.bestAvailableName(scan)}}</span>
+                    <span class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <span ng-show="scan.DateScanned">({{scan.DateScanned}})</span><abbr title="No date" ng-hide="scan.DateScanned">(n.d.)</abbr>
+                    </span>
+                </div>
+                <div class="controls col-lg-1 col-md-1 col-sm-1 col-xs-1 center-vertical">
+                    <a class="btn btn-lg action-link center-vertical" ng-click="list.remove(scan)"><span class="glyphicon glyphicon-remove"></span></a>
+                </div>
             </div>
         </li>
     </ul>
 </div>
 <div class="controls col-lg-12 col-md-12 col-sm-12">
-    <button class="btn btn-primary" ng-click="batch()">Sync to RDb</button>
+    <button class="btn btn-primary" ng-click="list.batch()">Sync to RDb</button>
 </div>

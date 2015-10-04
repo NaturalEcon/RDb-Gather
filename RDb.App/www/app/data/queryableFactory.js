@@ -31,6 +31,7 @@
             _where = [];
             _select = selectAll;
             queryable.data = queryResult;
+            queryable.length = queryResult.length;
         }
         var toList = function () {
             runQuery();
@@ -57,7 +58,20 @@
             }
             return false;
         }
+        queryable.all = function(condition) {
+            if (!condition) {
+                throw new Error("You must specify a condition");
+            }
+            runQuery();
+            for (var i in queryable.data) {
+                if (!condition(queryable.data[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
         queryable.toList = toList;
+        queryable.length = queryable.data.length;
         factory.Queryable = constructor;
         return factory;
     }

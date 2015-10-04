@@ -3,24 +3,21 @@
         $urlRouterProvider.otherwise('/home');
         $stateProvider
             .state('home', {
-                url: '/home',
-                templateUrl: 'views/home.html'
+                url:'/home',
+                templateUrl: 'app/home/home.html'
             })
             .state('about', {
                 url:'/about',
-                templateUrl: 'views/about.html'
+                templateUrl: 'app/home/about.html'
             })
             .state('scan', {
                 url: '/scan',
-                templateUrl: 'app/scan/scan.html',
-                controller: "scanCtrl"
+                templateUrl: 'app/scan/scan.html'
             })
             .state('list', {
                 url: '/list',
-                templateUrl: 'app/scan/list.html',
-                controller: "listCtrl"
+                templateUrl: 'app/scan/list.html'
             });
-
     }
     var exceptionHandling = function() {
         return function(exception, cause) {

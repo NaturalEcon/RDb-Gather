@@ -1,0 +1,17 @@
+﻿<div>
+    <nav class="navbar navbar-inverse" role="navigation" ng-show="{{root.rdb.UI.ShowNav}}">
+        <div class="nav navbar-nav navbar-collapse">
+            <span><a class="navbar-brand col-lg-3 col-md-3 col-sm-4 col-xs-7" ui-sref="home">{{root.rdb.UI.Title}}</a></span>
+            <div class="col-xs-5">
+                <div class="row">
+                    <a class="btn navbar-btn col-xs-4" ui-sref="scan"><span class="glyphicon glyphicon-barcode"></span></a>
+                    <a class="btn navbar-btn col-xs-4" ui-sref="list"><span class="glyphicon glyphicon-list"></span></a>
+                    <a class="btn navbar-btn col-xs-4" ui-sref="menu"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Scope inspector -->
+    <!--<ng-inspector></ng-inspector>-->
+    <div ui-view></div>
+</div>

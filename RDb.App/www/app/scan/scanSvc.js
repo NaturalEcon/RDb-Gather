@@ -1,44 +1,60 @@
 ﻿(function () {
-    var scanSvc = function ($cordova, $q) {
-        var scanned = [];
+    var scanSvc = function ($cordova, $q, scanDataSvc) {
         var _scan = $cordova.plugins.barcodeScanner.scan;
         var scan = function () {
-            var deferred = $q.defer();
-            _scan(function (result) {
-                scanned.push(result);
-                if (result.cancelled) {
-                    deferred.reject(result);
-                }
-                deferred.resolve(result);
-            }, function (err) {
-                deferred.reject(err);
-            });
-            return deferred.promise;
+            _scan(scanDataSvc.handleScanResult);
         }
-        var continuousScan = function () {
-            _scan(function (result) {
-                scanned.push(result);
-                if (!result.cancelled) {
-                    // ReSharper disable once UseOfImplicitGlobalInFunctionScope
-                    _continuousScan();
+        return {
+            scan: scan
+        };
+    }
+    angular.module("RDb")
+        .service("scanSvc", ["$cordova", "$q", "scanDataSvc", scanSvc]);
+})();
+
+(function() {
+    var scanDataSvc = function (sqlSvc, apiSvc, upcDtoFact, productFact) {
+        var scan = this;
+        var remove = function(itemToRemove) {
+            var isNotInput = function(item) {
+                var fixUndef = function(prop) {
+                    return prop === "undefined" ? undefined : prop;
                 }
+                var unequal = fixUndef(item.Upc) !== fixUndef(itemToRemove.Upc)
+                    || fixUndef(item.DateScanned) !== fixUndef(itemToRemove.DateScanned);
+                return unequal;
+            }
+            sqlSvc.upcList().then(function (list) {
+                var newList = list.where(isNotInput);
+                sqlSvc.upcList(newList).then(function() {
+                    return productFact.scans();
+                });
             });
         }
 
-        var batchScanned = function () {
-            //todo: send to server
-            scanned = [];
+        var updateProductInfo = function(upc) {
+            apiSvc.upcInfo(upc).then(function(response) {
+                scan.productInfo = response.data;
+                return sqlSvc.addUpcAndProductInfo(upc.Upc, scan.productInfo, upc.DateTime);
+            });
         }
-        return {
-            batchScanned: batchScanned,
-            scan: scan,
-            continuousScan: continuousScan
-        };
+        var scanSuccessful = function(response) {
+            scan.msg = response.data? "accepted" : "rejected";
+        }
+        var handleScanResult = function(result) {
+            scan.upc = upcDtoFact.scanToDto(result);
+            
+            if (apiSvc.streamResults) {
+                apiSvc.addUpc(scan.upc).then(scanSuccessful, function(response) {
+                    scan.msg = "rejected";
+                });
+            }
+            return updateProductInfo(scan.upc);
+        }
+
+        scan.handleScanResult = handleScanResult;
+        scan.remove = remove;
     }
-    try {
-        angular.module("RDb")
-            .service("scanSvc", ["$cordova", "$q", scanSvc]);
-    } catch (err) {
-        throw new Error("Scan service error");
-    }
+
+    angular.module("RDb").service("scanDataSvc", ["sqlSvc", "apiSvc", "upcDtoFact", "productFact", scanDataSvc]);
 })();
