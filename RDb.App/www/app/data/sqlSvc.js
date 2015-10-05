@@ -44,7 +44,7 @@
             var resolveResults = function (tx, results) {
                 var rows = q(results.rows);
                 var hasUpc = function(item) {
-                    return item.Upc;
+                    return !!item.upc;
                 }
                 if (rows.length && rows.all(hasUpc)) {
                     deferred.resolve(rows);
@@ -54,11 +54,13 @@
                     });
                 }
             }
-            var rejectWithError = function (err) {
+            var rejectWithError = function (tx, err) {
                 deferred.reject(err);
             }
             deferUntilInit(function () {
-                var queryString = "SELECT * FROM UPC u LEFT OUTER JOIN PRODUCTINFO p ON u.upc = p.upc";
+                var queryString = "SELECT UPC.upc, UPC.datetime, PRODUCTINFO.itemname, PRODUCTINFO.alias," +
+                                    " PRODUCTINFO.description, PRODUCTINFO.avg_price " +
+                                    "FROM UPC LEFT JOIN PRODUCTINFO ON UPC.upc = PRODUCTINFO.upc";
                 service.db.transaction(function (tx) {
                     tx.executeSql(queryString, [], resolveResults, rejectWithError);
                 });
@@ -147,6 +149,58 @@
             });
             return deferred.promise;
         }
+        //todo: Finish this
+        service.productInfo = function(newProductInfos) {
+            var deferred = $q.defer();
+            var resolveResults = function (tx, results) {
+                deferred.resolve(results.rowsAffected);
+            }
+            var rejectWithError = function (err) {
+                deferred.reject(err);
+            }
+            var selectUpcs = function() {
+                var queryString = "SELECT * FROM PRODUCTINFO";
+                service.db.transaction(function (tx) {
+                    tx.executeSql(queryString, [], resolveResults, rejectWithError);
+                });
+            }
+            var replaceAndSelect = function () {
+                if (newProductInfos.isQueryable) {
+                    newProductInfos = newProductInfos.toList();
+                }
+                var insertNewList = function () {
+                    service.db.transaction(function (tx) {
+                        var insertions = [];
+                        var queryString = "INSERT OR REPLACE INTO PRODUCTINFO (upc, itemname, alias, description, avg_price) VALUES (?,?,?,?,?)";
+                        angular.forEach(newProductInfos, function(info) {
+                            var insertion = $q.defer();
+                            insertions.push(insertion);
+                            tx.executeSql(queryString, [info.upc, info.itemname, info.alias, info.description, info.avg_price], function() { insertion.resolve(); }, rejectWithError);
+                        });
+                        $q.all(insertions).then(selectUpcs);
+                    });
+                }
+                var deleteWhereNotInList = function(then) {
+                    var sqlList = q(newProductInfos).select(function(item) { return item.upc; }).toList();
+                    var queryString = "DELETE FROM PRODUCTINFO WHERE upc NOT IN ('" + sqlList.join(',') + "')";
+                    service.db.transaction(function(tx) {
+                        tx.executeSql(queryString, [], then, rejectWithError);
+                    });
+                }
+                deleteWhereNotInList(insertNewList);
+            }
+
+            deferUntilInit(function () {
+                if (newProductInfos) {
+                    replaceAndSelect();
+                } else {
+                    selectUpcs();
+                }
+            });
+            return deferred.promise;
+        }
+
+
         service.addUpc = function(upc, datetime) {
             var deferred = $q.defer();
             var resolveResults = function (tx, results) {

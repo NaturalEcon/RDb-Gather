@@ -7,6 +7,7 @@
         };
         var constructor = function(list) {
             queryable.data = list;
+            queryable.length = list.length;
             return queryable;
         }
         var selectAll = function(item) { return item; }

@@ -24,9 +24,9 @@
                     || fixUndef(item.DateScanned) !== fixUndef(itemToRemove.DateScanned);
                 return unequal;
             }
-            sqlSvc.upcList().then(function (list) {
+            productFact.scans().then(function (list) {
                 var newList = list.where(isNotInput);
-                sqlSvc.upcList(newList).then(function() {
+                productFact.scans(newList).then(function () {
                     return productFact.scans();
                 });
             });
