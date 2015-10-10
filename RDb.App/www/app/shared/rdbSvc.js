@@ -20,7 +20,8 @@
         }
         return {
             getDate: getCsharpDate,
-            UI: UI
+            UI: UI,
+            $cordova: cordova //use cordova as injectable
         }
     }
     angular.module("RDb").service("rdbSvc", rdbSvc);

@@ -14,25 +14,17 @@
         var _where = [];
         var _select = selectAll;
         var runQuery = function() {
-            var queryResult = [];
-            angular.forEach(queryable.data, function(datum) {
-                if (_where.length > 0) {
-                    var include = true;
-
-                    for (var w_i in _where) {
-                        include = include && _where[w_i](datum);
-                    }
-                    if (include) {
-                        queryResult.push(_select(datum));
-                    }
-                } else {
-                    queryResult.push(_select(datum));
+            queryable.data = queryable.data.reduce(function(data, datum) {
+                if (_where.reduce(function(include, _w) { //if all where functions true
+                        return include && _w(datum);
+                    }, true)) {
+                    data.push(_select(datum)); //select item
                 }
-            });
+                return data;
+            }, []);
+            queryable.length = queryable.data.length;
             _where = [];
             _select = selectAll;
-            queryable.data = queryResult;
-            queryable.length = queryResult.length;
         }
         var toList = function () {
             runQuery();

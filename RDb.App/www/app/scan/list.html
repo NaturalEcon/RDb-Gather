@@ -1,6 +1,6 @@
-﻿<div id="scanList" class="container" ng-controller="listCtrl as list">
+﻿<div id="scanList" class="container">
     <ul class="list-unstyled" class="list-group">
-        <li ng-repeat="scan in list.scans" class="list-group-item">
+        <li ng-repeat="scan in list.scans track by $index" class="list-group-item">
             <div class="list-group-item-text row">
                 <div class="row col-lg-11 col-md-11 col-sm-11 col-xs-11">
                     <span class="col-lg-8 col-md-8 col-sm-8 col-xs-8">{{list.bestAvailableName(scan)}}</span>
@@ -14,7 +14,12 @@
             </div>
         </li>
     </ul>
-</div>
-<div class="controls col-lg-12 col-md-12 col-sm-12">
-    <button class="btn btn-primary" ng-click="list.batch()">Sync to RDb</button>
+    <div class="controls row center-block">
+        <a class="btn btn-lg btn-primary btn-labeled pull-left" ng-click="page.prev()" ng-disabled="!page.hasPrev()">Previous</a>
+        <a class="btn btn-lg btn-primary btn-labeled pull-right" ng-click="page.next()" ng-disabled="!page.hasNext()">Next</a>
+    </div>
+    <div class="spacer-v2"></div>
+    <div class="controls">
+        <button class="btn btn-toolbar" ng-click="list.batch()">Sync to RDb</button>
+    </div>
 </div>

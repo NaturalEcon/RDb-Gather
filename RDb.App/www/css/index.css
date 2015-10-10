@@ -6,3 +6,27 @@
     vertical-align: middle;
     float: none;
 }
+
+.spacer-v1 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.spacer-v2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.spacer-v3 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.spacer-v4 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.btn-labeled {
+    min-width: 105px;
+}
